@@ -15,7 +15,6 @@ app.use('/v1/auth', authRouter)
 app.post('/', (req, res) => {})
 
 app.get('/', (req, res) => {
-    res.send('Hello World!')
 })
 
 app.listen(3000, () => {
