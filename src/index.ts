@@ -1,7 +1,9 @@
 import express from 'express'
 import connectDB from './config/mongodb'
 import authRouter from './routes/authRoutes'
+import dotenv from 'dotenv'
 
+dotenv.config()
 const app = express()
 
 // Kết nối MongoDB
@@ -16,6 +18,7 @@ app.get('/', (req, res) => {
     res.send('Hello World')
 })
 
-app.listen(3000, '0.0.0.0', () => {
-    console.log('Server is running on http://localhost:' + 3000)
+const post = process.env.PORT || 3000
+app.listen(post, () => {
+    console.log('Server is running on http://localhost: ${post}')
 })
