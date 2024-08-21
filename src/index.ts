@@ -18,7 +18,7 @@ app.get('/', (req, res) => {
     res.send('Hello World')
 })
 
-const post = process.env.PORT || 3000
+const post = process.env.POST || 3000
 app.listen(post, () => {
-    console.log('Server is running on http://localhost: ${post}')
+    console.log('Server is running on http://localhost:' + post)
 })
