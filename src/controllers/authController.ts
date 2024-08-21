@@ -1,4 +1,4 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import User, { IUser } from '~/models/user'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
@@ -33,11 +33,11 @@ export const register = async (req: Request, res: Response) => {
 
 // Đăng nhập tài khoản sử dụng jwt
 export const login = async (req: Request, res: Response) => {
-    const { username, password } = req.body
+    const { email, password } = req.body
 
     try {
         // Kiểm tra xem tài khoản đã tồn tại hay chưa
-        const user = await User.findOne({ username })
+        const user = await User.findOne({ email })
         if (!user) {
             return res.status(400).json({ message: 'Invalid credentials' })
         }
@@ -68,3 +68,26 @@ export const login = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Internal server error' })
     }
 }
+
+// Tài khoản miễn phí
+export const freeEndpoint = (req: Request, res: Response) => {
+    res.json({ message: 'YOu are free to access to me anytime' })
+}
+
+// Tài khoản cần xác thực
+export const authEndpoint = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const token = req.header('Authorization')
+        if (!token) {
+            return res.status(401).json({ message: 'No token, authorization denied' })
+        }
+
+        const decoded = jwt.verify(token, 'RANDOM-TOKEN')
+        req.body.user = decoded
+        next()
+    } catch (error) {
+        console.error('Error in auth middleware:', error)
+        res.status(500).json({ message: 'Internal server error' })
+    }
+}
+
