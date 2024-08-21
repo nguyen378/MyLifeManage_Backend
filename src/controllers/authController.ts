@@ -71,23 +71,24 @@ export const login = async (req: Request, res: Response) => {
 
 // Tài khoản miễn phí
 export const freeEndpoint = (req: Request, res: Response) => {
-    res.json({ message: 'YOu are free to access to me anytime' })
+    res.json({ message: 'You are free to access to me anytime' })
 }
 
 // Tài khoản cần xác thực
 export const authEndpoint = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const token = req.header('Authorization')
-        if (!token) {
+        const authHeader = req.header('Authorization')
+        if (!authHeader) {
             return res.status(401).json({ message: 'No token, authorization denied' })
         }
+
+        const token = authHeader.split(' ')[1]
 
         const decoded = jwt.verify(token, 'RANDOM-TOKEN')
         req.body.user = decoded
         next()
     } catch (error) {
-        console.error('Error in auth middleware:', error)
+        console.error('Error in auth:', error)
         res.status(500).json({ message: 'Internal server error' })
     }
 }
-
